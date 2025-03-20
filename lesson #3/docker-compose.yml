@@ -1,0 +1,20 @@
+services:
+#  celery:
+#    container_name: OwnCelery
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    command: "celery -A app.celery worker --loglevel=info"
+#  redis:
+#    container_name: OwnRedis
+#    image: redis:latest
+#    ports:
+#      - "6379:6379"
+  rabbitmq:
+    container_name: OwnRabbitMQ
+    image: heidiks/rabbitmq-delayed-message-exchange
+    volumes:
+      - ./rabbitmq_data:/var/lcib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
