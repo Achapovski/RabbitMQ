@@ -1,20 +1,27 @@
 services:
-#  celery:
-#    container_name: OwnCelery
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    command: "celery -A app.celery worker --loglevel=info"
-#  redis:
-#    container_name: OwnRedis
-#    image: redis:latest
-#    ports:
-#      - "6379:6379"
+  publisher:
+    container_name: "Publisher"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python3 -m publisher.py
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: always
+
   rabbitmq:
     container_name: OwnRabbitMQ
+    hostname: rabbit
     image: heidiks/rabbitmq-delayed-message-exchange
     volumes:
       - ./rabbitmq_data:/var/lcib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      retries: 5
+      interval: 5s
     ports:
       - "5672:5672"
       - "15672:15672"
+
+
